@@ -1,0 +1,14 @@
+{
+  "_comentario": "FLUJO OFICIAL (docs.polymarket.com, cuentas por email): 1) wallet_address = tu dirección 0x... en el perfil de Polymarket. 2) signer_private_key = tu clave privada del firmante, exportada en https://reveal.magic.link/polymarket (¡guardarla en secreto!). 3) relayer_api_key + relayer_api_key_address = opcionales, de Settings > API Keys > Relayer API Keys (te permiten operar sin pagar gas). Las CLOB api_key/secret/passphrase son OPCIONALES: si las dejas vacías, el bot las deriva automáticamente de la clave privada. NUNCA subas este archivo a GitHub.",
+  "api_key": "",
+  "api_secret": "",
+  "api_passphrase": "",
+  "wallet_private_key": "0x_CLAVE_PRIVADA_DEL_FIRMANTE_(reveal.magic.link/polymarket)",
+  "wallet_address": "0x_DIRECCION_DE_TU_CUENTA_(perfil_de_Polymarket)",
+  "relayer_api_key": "",
+  "relayer_api_key_address": "",
+  "bankroll": 500,
+  "fee_pct": 0.0,
+  "signature_type": 1,
+  "confirmado": false
+}

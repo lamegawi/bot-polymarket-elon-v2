@@ -1,0 +1,13 @@
+{
+  "ntfy": {
+    "topic": "elon-poly-g2p7e8ev",
+    "token": null
+  },
+  "telegram": {
+    "token": "",
+    "chat_id": ""
+  },
+  "resumen": {
+    "hora": 20
+  }
+}

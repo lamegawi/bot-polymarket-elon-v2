@@ -1,0 +1,69 @@
+# 🤖 Bot Polymarket (modo REAL) — 24/7 GRATIS con GitHub Actions
+# --------------------------------------------------------------
+# Ejecuta una pasada completa del bot cada 15 minutos usando los
+# minutos GRATIS de GitHub Actions. El bot guarda su estado haciendo
+# commit en cada pasada (los datos viven en el repo).
+#
+# ⭐ VENTAJA: usa el GITHUB_TOKEN automático (no hace falta crear PAT).
+#   Solo hay que declarar "permissions: contents: write" (ya está abajo).
+#
+# REQUISITOS (ver GUIA_24H_PASO_A_PASO.md):
+#   1) Repositorio en GitHub PÚBLICO (minutos ilimitados gratis)
+#   2) Secretos del repo (Settings → Secrets and variables → Actions):
+#        POLY_PRIVATE_KEY    → tu clave privada del firmante
+#        POLY_WALLET_ADDRESS → tu dirección 0x... de Polymarket
+#        REAL_CONFIRMADO     → "1" para operar de verdad
+#
+# NOTAS:
+#   · NUNCA subas config_real.json (ya está en .gitignore).
+#   · El bot hace commit en cada pasada → GitHub nunca pausa los cron.
+#   · Las notificaciones al móvil (ntfy) funcionan igual (config.json no es secreto).
+
+name: Bot Polymarket Elon V2 (48h)
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'      # cada 15 minutos (UTC)
+  workflow_dispatch: {}          # botón "Run workflow" para probar a mano
+
+permissions:
+  contents: write                # permite al GITHUB_TOKEN hacer commit/push
+
+concurrency:
+  group: bot-v2-48h
+  cancel-in-progress: false      # nunca cancelar una pasada a medias
+
+jobs:
+  bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --quiet --upgrade pip
+          python -m pip install --quiet openpyxl py-clob-client-v2
+
+      - name: Ejecutar una pasada del bot (MODO REAL)
+        env:
+          POLY_PRIVATE_KEY: ${{ secrets.POLY_PRIVATE_KEY }}
+          POLY_WALLET_ADDRESS: ${{ secrets.POLY_WALLET_ADDRESS }}
+          REAL_CONFIRMADO: ${{ secrets.REAL_CONFIRMADO }}
+        run: python -u bot.py --modo real --excel
+
+      - name: Guardar estado (commit de los datos)
+        run: |
+          git config user.name "bot-poly-v2-48h"
+          git config user.email "bot-poly-v2-48h@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "estado bot v2-48h $(date -u +'%Y-%m-%d %H:%M')"
+          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main
