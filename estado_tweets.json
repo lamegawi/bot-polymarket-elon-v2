@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-08-12T05:13:25.527021",
+ "actualizado": "2026-08-12T09:43:04.111563",
  "tweets": {
   "2085377974396752305": {
    "id": "2085377974396752305",
@@ -504,6 +504,69 @@
    "autor": "elonmusk",
    "created_at": "Tue Aug 11 17:23:00 +0000 2026",
    "primera_vista": "Tue Aug 11 20:11:14 +0000 2026"
+  },
+  "2087411297411625227": {
+   "id": "2087411297411625227",
+   "kind": "repost",
+   "autor": "elonmusk",
+   "created_at": "Wed Aug 12 05:30:00 +0000 2026",
+   "primera_vista": "Wed Aug 12 09:43:04 +0000 2026"
+  },
+  "2087246938530062794": {
+   "id": "2087246938530062794",
+   "kind": "repost",
+   "autor": "elonmusk",
+   "created_at": "Tue Aug 11 18:37:00 +0000 2026",
+   "primera_vista": "Wed Aug 12 09:43:04 +0000 2026"
+  },
+  "2087433701764497852": {
+   "id": "2087433701764497852",
+   "kind": "post",
+   "autor": "elonmusk",
+   "created_at": "Wed Aug 12 06:59:00 +0000 2026",
+   "primera_vista": "Wed Aug 12 09:43:04 +0000 2026"
+  },
+  "2087433011478634944": {
+   "id": "2087433011478634944",
+   "kind": "post",
+   "autor": "elonmusk",
+   "created_at": "Wed Aug 12 06:56:00 +0000 2026",
+   "primera_vista": "Wed Aug 12 09:43:04 +0000 2026"
+  },
+  "2087410119256764540": {
+   "id": "2087410119256764540",
+   "kind": "post",
+   "autor": "elonmusk",
+   "created_at": "Wed Aug 12 05:25:00 +0000 2026",
+   "primera_vista": "Wed Aug 12 09:43:04 +0000 2026"
+  },
+  "2087314260770930780": {
+   "id": "2087314260770930780",
+   "kind": "repost",
+   "autor": "elonmusk",
+   "created_at": "Tue Aug 11 23:04:00 +0000 2026",
+   "primera_vista": "Wed Aug 12 09:43:04 +0000 2026"
+  },
+  "2087255832677253435": {
+   "id": "2087255832677253435",
+   "kind": "repost",
+   "autor": "elonmusk",
+   "created_at": "Tue Aug 11 19:12:00 +0000 2026",
+   "primera_vista": "Wed Aug 12 09:43:04 +0000 2026"
+  },
+  "2087409427888603229": {
+   "id": "2087409427888603229",
+   "kind": "post",
+   "autor": "elonmusk",
+   "created_at": "Wed Aug 12 05:22:00 +0000 2026",
+   "primera_vista": "Wed Aug 12 09:43:04 +0000 2026"
+  },
+  "2087409075009274035": {
+   "id": "2087409075009274035",
+   "kind": "post",
+   "autor": "elonmusk",
+   "created_at": "Wed Aug 12 05:21:00 +0000 2026",
+   "primera_vista": "Wed Aug 12 09:43:04 +0000 2026"
   }
  }
 }
