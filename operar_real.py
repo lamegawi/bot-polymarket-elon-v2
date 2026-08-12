@@ -536,7 +536,7 @@ def probar_orden():
     except Exception:
         print("  (sin mercado_activo.json: ejecuta primero el bot en papel)")
         return
-    activo = next((m for m in mercados if not m["cerrado"] and m["tipo"] == "48h"), None)
+        activo = next((m for m in mercados if not m["cerrado"] and m["tipo"] == "semanal" and m.get("fin_iso") and datetime.fromisoformat(m["fin_iso"]) > datetime.now(timezone.utc)), None)
     if not activo:
         print("  (no hay mercado 48h abierto ahora mismo)")
         return
