@@ -214,7 +214,7 @@ def avisar_resumen_diario():
         hora = int((cfg.get("resumen") or {}).get("hora", 20))
         if hora < 0:
             return
-                ahora = datetime.now(ET)
+        ahora = datetime.now(ET)
         eb = cargar_estado_bot()
         hoy = ahora.date().isoformat()
         if eb.get("ultimo_resumen") == hoy:
