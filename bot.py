@@ -214,12 +214,14 @@ def avisar_resumen_diario():
         hora = int((cfg.get("resumen") or {}).get("hora", 20))
         if hora < 0:
             return
-        ahora = datetime.now(ET)
-        if ahora.hour < hora:
-            return
+                ahora = datetime.now(ET)
         eb = cargar_estado_bot()
         hoy = ahora.date().isoformat()
         if eb.get("ultimo_resumen") == hoy:
+            return
+        # Ventana de envío: 20:00-23:59 (hora normal) o 00:00-06:00
+        # (recuperación si el cron se retrasó y el de ayer no se envió).
+        if not (ahora.hour >= hora or ahora.hour < 6):
             return
         # construir el resumen con el estado real
         est = papel.cargar_estado()
