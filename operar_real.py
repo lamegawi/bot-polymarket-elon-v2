@@ -365,7 +365,7 @@ def abrir(estado, dry=False, actualizar=False):
     c = candidatas[0]
 
     # ---- salvaguardas
-    if c["paso"] > 7:
+    if estado["paso"] > 7:
         print("  [BLOQUEADO] paso > 7: stop de ciclo. Reinicia el ciclo.")
         return False
     fee = cfg.get("fee_pct", 0.0)
