@@ -1,12 +1,12 @@
 {
- "actualizado": "2026-08-14T19:39:49.163165+00:00",
+ "actualizado": "2026-08-14T20:06:23.629093+00:00",
  "mercados": [
   {
    "id": "828515",
    "titulo": "Elon Musk # tweets August 13 - August 15, 2026?",
    "slug": "elon-musk-of-tweets-august-13-august-15",
    "cerrado": false,
-   "volumen": 364565.72634999995,
+   "volumen": 366112.67795399996,
    "endDate": "2026-08-15T16:00:00Z",
    "inicio_iso": "2026-08-13T12:00:00-04:00",
    "fin_iso": "2026-08-15T12:00:00-04:00",
@@ -21,47 +21,47 @@
      "precio_no": 1.0,
      "cuota_yes": null,
      "cuota_no": 1.0,
-     "volumen": 67314.472759
+     "volumen": 67314.47275899998
     },
     {
      "titulo": "40-64",
      "lo": 40,
      "hi": 64,
-     "precio_yes": 0.165,
-     "precio_no": 0.835,
-     "cuota_yes": 6.0606060606060606,
-     "cuota_no": 1.1976047904191618,
-     "volumen": 71768.74420499997
+     "precio_yes": 0.22,
+     "precio_no": 0.78,
+     "cuota_yes": 4.545454545454546,
+     "cuota_no": 1.282051282051282,
+     "volumen": 72748.30975899998
     },
     {
      "titulo": "65-89",
      "lo": 65,
      "hi": 89,
-     "precio_yes": 0.71,
-     "precio_no": 0.29,
-     "cuota_yes": 1.4084507042253522,
-     "cuota_no": 3.4482758620689653,
-     "volumen": 44861.63422499998
+     "precio_yes": 0.7,
+     "precio_no": 0.3,
+     "cuota_yes": 1.4285714285714286,
+     "cuota_no": 3.333333333333333,
+     "volumen": 45137.079774999984
     },
     {
      "titulo": "90-114",
      "lo": 90,
      "hi": 114,
-     "precio_yes": 0.1075,
-     "precio_no": 0.8925,
-     "cuota_yes": 9.30232558139535,
-     "cuota_no": 1.1204481792717087,
-     "volumen": 64345.06121999999
+     "precio_yes": 0.104,
+     "precio_no": 0.896,
+     "cuota_yes": 9.615384615384615,
+     "cuota_no": 1.1160714285714286,
+     "volumen": 64422.061219999996
     },
     {
      "titulo": "115-139",
      "lo": 115,
      "hi": 139,
-     "precio_yes": 0.0055,
-     "precio_no": 0.9945,
-     "cuota_yes": 181.81818181818184,
-     "cuota_no": 1.0055304172951232,
-     "volumen": 49083.116465000014
+     "precio_yes": 0.005,
+     "precio_no": 0.995,
+     "cuota_yes": 200.0,
+     "cuota_no": 1.0050251256281406,
+     "volumen": 49298.056965
     },
     {
      "titulo": "140-164",
@@ -120,7 +120,7 @@
    "titulo": "Elon Musk # tweets August 11 - August 18, 2026?",
    "slug": "elon-musk-of-tweets-august-11-august-18",
    "cerrado": false,
-   "volumen": 834982.7770510002,
+   "volumen": 838100.448805,
    "endDate": "2026-08-18T16:00:00Z",
    "inicio_iso": "2026-08-11T12:00:00-04:00",
    "fin_iso": "2026-08-18T12:00:00-04:00",
@@ -185,7 +185,7 @@
      "precio_no": 0.9995,
      "cuota_yes": 2000.0,
      "cuota_no": 1.0005002501250624,
-     "volumen": 61450.38295700001
+     "volumen": 61450.382957
     },
     {
      "titulo": "120-139",
@@ -195,7 +195,7 @@
      "precio_no": 0.9985,
      "cuota_yes": 666.6666666666666,
      "cuota_no": 1.0015022533800702,
-     "volumen": 78794.86233999999
+     "volumen": 80294.86233999999
     },
     {
      "titulo": "140-159",
@@ -205,17 +205,17 @@
      "precio_no": 0.9825,
      "cuota_yes": 57.14285714285714,
      "cuota_no": 1.0178117048346056,
-     "volumen": 61779.199953
+     "volumen": 62571.319953
     },
     {
      "titulo": "160-179",
      "lo": 160,
      "hi": 179,
-     "precio_yes": 0.135,
-     "precio_no": 0.865,
-     "cuota_yes": 7.4074074074074066,
-     "cuota_no": 1.1560693641618498,
-     "volumen": 65423.99756800005
+     "precio_yes": 0.125,
+     "precio_no": 0.875,
+     "cuota_yes": 8.0,
+     "cuota_no": 1.1428571428571428,
+     "volumen": 65477.31250600002
     },
     {
      "titulo": "180-199",
@@ -225,7 +225,7 @@
      "precio_no": 0.735,
      "cuota_yes": 3.773584905660377,
      "cuota_no": 1.3605442176870748,
-     "volumen": 47392.534131000095
+     "volumen": 47455.34693900009
     },
     {
      "titulo": "200-219",
@@ -235,27 +235,27 @@
      "precio_no": 0.715,
      "cuota_yes": 3.5087719298245617,
      "cuota_no": 1.3986013986013985,
-     "volumen": 27255.695786000026
+     "volumen": 27269.971647
     },
     {
      "titulo": "220-239",
      "lo": 220,
      "hi": 239,
-     "precio_yes": 0.195,
-     "precio_no": 0.805,
-     "cuota_yes": 5.128205128205128,
-     "cuota_no": 1.2422360248447206,
-     "volumen": 18391.029410000003
+     "precio_yes": 0.175,
+     "precio_no": 0.825,
+     "cuota_yes": 5.714285714285714,
+     "cuota_no": 1.2121212121212122,
+     "volumen": 18702.177557
     },
     {
      "titulo": "240-259",
      "lo": 240,
      "hi": 259,
-     "precio_yes": 0.0735,
-     "precio_no": 0.9265,
-     "cuota_yes": 13.60544217687075,
-     "cuota_no": 1.0793308148947653,
-     "volumen": 30467.343381
+     "precio_yes": 0.0745,
+     "precio_no": 0.9255,
+     "cuota_yes": 13.422818791946309,
+     "cuota_no": 1.0804970286331712,
+     "volumen": 30722.343380999995
     },
     {
      "titulo": "260-279",
@@ -265,17 +265,17 @@
      "precio_no": 0.9765,
      "cuota_yes": 42.5531914893617,
      "cuota_no": 1.0240655401945724,
-     "volumen": 42276.627781999996
+     "volumen": 42276.627782
     },
     {
      "titulo": "280-299",
      "lo": 280,
      "hi": 299,
-     "precio_yes": 0.0075,
-     "precio_no": 0.9925,
-     "cuota_yes": 133.33333333333334,
-     "cuota_no": 1.0075566750629723,
-     "volumen": 41319.178706
+     "precio_yes": 0.0065,
+     "precio_no": 0.9935,
+     "cuota_yes": 153.84615384615384,
+     "cuota_no": 1.0065425264217414,
+     "volumen": 41448.178706
     },
     {
      "titulo": "300-319",
@@ -285,7 +285,7 @@
      "precio_no": 0.9975,
      "cuota_yes": 400.0,
      "cuota_no": 1.0025062656641603,
-     "volumen": 42494.99765099998
+     "volumen": 42494.997651
     },
     {
      "titulo": "320-339",
@@ -295,7 +295,7 @@
      "precio_no": 0.9985,
      "cuota_yes": 666.6666666666666,
      "cuota_no": 1.0015022533800702,
-     "volumen": 27171.293067
+     "volumen": 27171.293067000002
     },
     {
      "titulo": "340-359",
@@ -394,7 +394,7 @@
    "titulo": "Elon Musk # tweets August 14 - August 21, 2026?",
    "slug": "elon-musk-of-tweets-august-14-august-21",
    "cerrado": false,
-   "volumen": 348368.833309,
+   "volumen": 349681.87287099997,
    "endDate": "2026-08-21T16:00:00Z",
    "inicio_iso": "2026-08-14T12:00:00-04:00",
    "fin_iso": "2026-08-21T12:00:00-04:00",
@@ -459,7 +459,7 @@
      "precio_no": 0.9895,
      "cuota_yes": 95.23809523809523,
      "cuota_no": 1.010611419909045,
-     "volumen": 38815.129245
+     "volumen": 38996.949245
     },
     {
      "titulo": "120-139",
@@ -479,7 +479,7 @@
      "precio_no": 0.895,
      "cuota_yes": 9.523809523809524,
      "cuota_no": 1.1173184357541899,
-     "volumen": 4437.911266
+     "volumen": 4463.911266
     },
     {
      "titulo": "160-179",
@@ -489,17 +489,17 @@
      "precio_no": 0.825,
      "cuota_yes": 5.714285714285714,
      "cuota_no": 1.2121212121212122,
-     "volumen": 4468.324988999999
+     "volumen": 4637.824989
     },
     {
      "titulo": "180-199",
      "lo": 180,
      "hi": 199,
-     "precio_yes": 0.225,
-     "precio_no": 0.775,
-     "cuota_yes": 4.444444444444445,
-     "cuota_no": 1.2903225806451613,
-     "volumen": 8754.658994
+     "precio_yes": 0.205,
+     "precio_no": 0.795,
+     "cuota_yes": 4.878048780487805,
+     "cuota_no": 1.2578616352201257,
+     "volumen": 9183.986322
     },
     {
      "titulo": "200-219",
@@ -509,7 +509,7 @@
      "precio_no": 0.805,
      "cuota_yes": 5.128205128205128,
      "cuota_no": 1.2422360248447206,
-     "volumen": 3767.966901
+     "volumen": 3770.0162790000004
     },
     {
      "titulo": "220-239",
@@ -519,7 +519,7 @@
      "precio_no": 0.865,
      "cuota_yes": 7.4074074074074066,
      "cuota_no": 1.1560693641618498,
-     "volumen": 2702.985896
+     "volumen": 3017.268752
     },
     {
      "titulo": "240-259",
@@ -545,10 +545,10 @@
      "titulo": "280-299",
      "lo": 280,
      "hi": 299,
-     "precio_yes": 0.0165,
-     "precio_no": 0.9835,
-     "cuota_yes": 60.6060606060606,
-     "cuota_no": 1.0167768174885612,
+     "precio_yes": 0.0155,
+     "precio_no": 0.9845,
+     "cuota_yes": 64.51612903225806,
+     "cuota_no": 1.015744032503809,
      "volumen": 10893.114679
     },
     {
@@ -559,7 +559,7 @@
      "precio_no": 0.9925,
      "cuota_yes": 133.33333333333334,
      "cuota_no": 1.0075566750629723,
-     "volumen": 8681.105185
+     "volumen": 8811.105185
     },
     {
      "titulo": "320-339",
@@ -589,7 +589,7 @@
      "precio_no": 0.998,
      "cuota_yes": 500.0,
      "cuota_no": 1.002004008016032,
-     "volumen": 25245.337282000004
+     "volumen": 25305.397282
     },
     {
      "titulo": "380-399",
@@ -599,7 +599,7 @@
      "precio_no": 0.9995,
      "cuota_yes": 2000.0,
      "cuota_no": 1.0005002501250624,
-     "volumen": 35366.208000000006
+     "volumen": 35366.208
     },
     {
      "titulo": "400-419",
@@ -782,7 +782,7 @@
    "titulo": "Elon Musk # tweets August 7 - August 14, 2026?",
    "slug": "elon-musk-of-tweets-august-7-august-14",
    "cerrado": true,
-   "volumen": 3484769.0597469993,
+   "volumen": 3484769.059746999,
    "endDate": "2026-08-14T16:00:00Z",
    "inicio_iso": "2026-08-07T12:00:00-04:00",
    "fin_iso": "2026-08-14T12:00:00-04:00",
@@ -867,7 +867,7 @@
      "precio_no": 1.0,
      "cuota_yes": null,
      "cuota_no": 1.0,
-     "volumen": 349012.63168599934
+     "volumen": 349012.6316859992
     },
     {
      "titulo": "160-179",
@@ -887,7 +887,7 @@
      "precio_no": 0.0,
      "cuota_yes": 1.0,
      "cuota_no": null,
-     "volumen": 432488.92960000015
+     "volumen": 432488.92960000003
     },
     {
      "titulo": "200-219",
@@ -917,7 +917,7 @@
      "precio_no": 1.0,
      "cuota_yes": null,
      "cuota_no": 1.0,
-     "volumen": 225023.7997529999
+     "volumen": 225023.79975299994
     },
     {
      "titulo": "260-279",
