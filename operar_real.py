@@ -46,6 +46,7 @@ import senal
 import senal_vivo
 import mercado_polymarket as mp
 import notificar
+import saldo_ntfy
 
 try:
     ET = ZoneInfo("America/New_York")
@@ -324,7 +325,8 @@ def resolver(estado, fee_pct=0.0):
         notificar.enviar(
             f"{'✅ GANADA' if res == 'G' else '❌ PERDIDA'}  ${benef:+.2f} (REAL)\n"
             f"Bin {act['bin_titulo']} · {act['lado']} · ganador real {winner_titulo}\n"
-            f"Stake ${act['stake']:.2f} · saldo ${estado['saldo']:.2f}",
+            f"Stake ${act['stake']:.2f} · saldo bot ${estado['saldo']:.2f}\n"
+            f"{saldo_ntfy.saldo_real_texto()}",
             titulo="[V2-48H] 💰 Apuesta REAL cerrada",
             etiqueta="white_check_mark" if res == "G" else "x")
     except Exception:
@@ -483,7 +485,8 @@ def abrir(estado, dry=False, actualizar=False):
             f"💰 ORDEN {'SIMULADA' if dry else 'REAL'} enviada\n"
             f"Mercado: {c['slug']}\nBin {c['bin_titulo']} · {c['lado']} "
             f"@ {c['precio']:.3f} (cuota {c['cuota']:.2f})\n"
-            f"Paso {estado['paso']} · stake ${c['stake']:.2f}",
+            f"Paso {estado['paso']} · stake ${c['stake']:.2f}"
+            f"{saldo_ntfy.saldo_real_texto()}\n",
             titulo="[V2-48H] 💰 Apuesta REAL abierta",
             etiqueta="moneybag")
     except Exception:
