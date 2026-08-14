@@ -26,8 +26,8 @@ import random
 import string
 import subprocess
 import time
-import saldo_ntfy
 from datetime import datetime
+import saldo_ntfy
 from zoneinfo import ZoneInfo
 
 try:
@@ -113,7 +113,8 @@ def apuesta_abierta(act, saldo):
         f"Bin {act['bin_titulo']} · Lado {act['lado']}\n"
         f"Precio ${act['precio']:.3f} · Cuota {act['cuota']:.2f}\n"
         f"p_modelo: {act['p_modelo']:.0%} · Paso {act['paso']}\n"
-        f"Stake: ${act['stake']:.2f} · Saldo: ${saldo:.2f}"
+        f"Stake: ${act['stake']:.2f} · Saldo bot: ${saldo:.2f}\n"
+        f"{saldo_ntfy.saldo_real_texto()}"
     )
     return enviar(mensaje, titulo="🟢 Nueva apuesta abierta",
                   etiqueta="chart_with_upwards_trend")
@@ -132,7 +133,8 @@ def apuesta_cerrada(reg, saldo):
         f"Bin {reg['bin']} · Lado {reg['lado']}\n"
         f"Ganador real del mercado: {reg['real']}\n"
         f"Stake ${reg['stake']:.2f} · Paso {reg['paso']}\n"
-        f"Saldo: ${saldo:.2f}"
+        f"Saldo bot: ${saldo:.2f}\n"
+        f"{saldo_ntfy.saldo_real_texto()}"
     )
     return enviar(mensaje, titulo="🔔 Apuesta cerrada", etiqueta=etiqueta)
 
@@ -216,16 +218,17 @@ def casi_senal(evaluados, horas=6):
             falta = f"cuota {cuota_lado:.2f} < {senal.CUOTA_MINIMA:.2f} (falta precio más barato)"
         else:
             falta = f"p_modelo {p:.0%} fuera de zona (necesita ≥60% o ≤30%)"
-             slug = ev.get('slug') or ''
-     enlace = f"https://polymarket.com/event/{slug}" if slug else ""
-     mensaje = (
-         f"🟡 CASI SEÑAL — NO se apuesta (informativo)\n"
-         f"{ev['titulo']}\n"
-         f"Bin {b['titulo']} · lado {lado} · p_modelo {p:.0%}\n"
-         f"Cuota YES {cy:.2f} · NO {cn:.2f}\n"
-         f"Falta: {falta}\n"
-         f"🔗 {enlace}"
-     )
+        # enlace directo al mercado (para operar manualmente)
+        slug = ev.get('slug') or ''
+        enlace = f"https://polymarket.com/event/{slug}" if slug else ""
+        mensaje = (
+            f"🟡 CASI SEÑAL — NO se apuesta (informativo)\n"
+            f"{ev['titulo']}\n"
+            f"Bin {b['titulo']} · lado {lado} · p_modelo {p:.0%}\n"
+            f"Cuota YES {cy:.2f} · NO {cn:.2f}\n"
+            f"Falta: {falta}\n"
+            f"🔗 {enlace}"
+        )
         enviar(mensaje, titulo="👀 Casi señal (sin apuesta)",
                etiqueta="eyes", prioridad="default")
 
@@ -257,7 +260,8 @@ def resumen_diario(saldo, paso, historial, apuesta_activa=None,
     tot = sum(h["beneficio"] for h in historial)
 
     lineas = [f"📊 RESUMEN DIARIO — {hoy}",
-              f"Saldo: ${saldo:.2f} · Beneficio acumulado: ${tot:+.2f}",
+              f"Saldo bot: ${saldo:.2f} · {saldo_ntfy.saldo_real_texto()}",
+              f"Beneficio acumulado: ${tot:+.2f}",
               f"Operaciones: {n} totales ({g}G/{n-g}P) · Hoy: {n_hoy} ({g_hoy}G/{n_hoy-g_hoy}P)",
               f"Paso del ciclo: {paso}"]
     if apuesta_activa:
