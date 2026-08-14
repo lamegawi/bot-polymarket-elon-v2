@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-08-13T21:29:56.709995",
+ "actualizado": "2026-08-14T00:03:18.312279",
  "tweets": {
   "2085377974396752305": {
    "id": "2085377974396752305",
@@ -573,7 +573,7 @@
    "kind": "post",
    "autor": "elonmusk",
    "created_at": "Wed Aug 12 15:41:00 +0000 2026",
-   "primera_vista": "Thu Aug 13 05:25:17 +0000 2026"
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
   },
   "2087566406921617534": {
    "id": "2087566406921617534",
@@ -818,42 +818,42 @@
    "kind": "repost",
    "autor": "elonmusk",
    "created_at": "Thu Aug 13 19:16:00 +0000 2026",
-   "primera_vista": "Thu Aug 13 21:29:56 +0000 2026"
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
   },
   "2087985336471142806": {
    "id": "2087985336471142806",
    "kind": "repost",
    "autor": "elonmusk",
    "created_at": "Thu Aug 13 19:31:00 +0000 2026",
-   "primera_vista": "Thu Aug 13 21:29:56 +0000 2026"
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
   },
   "2087984574768816159": {
    "id": "2087984574768816159",
    "kind": "post",
    "autor": "elonmusk",
    "created_at": "Thu Aug 13 19:28:00 +0000 2026",
-   "primera_vista": "Thu Aug 13 21:29:56 +0000 2026"
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
   },
   "2087949309031379114": {
    "id": "2087949309031379114",
    "kind": "repost",
    "autor": "elonmusk",
    "created_at": "Thu Aug 13 17:08:00 +0000 2026",
-   "primera_vista": "Thu Aug 13 21:29:56 +0000 2026"
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
   },
   "2087600689337835811": {
    "id": "2087600689337835811",
    "kind": "repost",
    "autor": "elonmusk",
    "created_at": "Wed Aug 12 18:02:00 +0000 2026",
-   "primera_vista": "Thu Aug 13 21:29:56 +0000 2026"
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
   },
   "2087905815608918284": {
    "id": "2087905815608918284",
    "kind": "repost",
    "autor": "elonmusk",
    "created_at": "Thu Aug 13 14:15:00 +0000 2026",
-   "primera_vista": "Thu Aug 13 21:29:56 +0000 2026"
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
   },
   "2087979619618082898": {
    "id": "2087979619618082898",
@@ -910,6 +910,104 @@
    "autor": "elonmusk",
    "created_at": "Thu Aug 13 18:30:00 +0000 2026",
    "primera_vista": "Thu Aug 13 21:29:56 +0000 2026"
+  },
+  "2088016559755211058": {
+   "id": "2088016559755211058",
+   "kind": "repost",
+   "autor": "elonmusk",
+   "created_at": "Thu Aug 13 21:35:00 +0000 2026",
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
+  },
+  "2088037519312994480": {
+   "id": "2088037519312994480",
+   "kind": "post",
+   "autor": "elonmusk",
+   "created_at": "Thu Aug 13 22:58:00 +0000 2026",
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
+  },
+  "2088012952624418880": {
+   "id": "2088012952624418880",
+   "kind": "repost",
+   "autor": "elonmusk",
+   "created_at": "Thu Aug 13 21:20:00 +0000 2026",
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
+  },
+  "2088019251290341427": {
+   "id": "2088019251290341427",
+   "kind": "repost",
+   "autor": "elonmusk",
+   "created_at": "Thu Aug 13 21:45:00 +0000 2026",
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
+  },
+  "2087935553790410954": {
+   "id": "2087935553790410954",
+   "kind": "repost",
+   "autor": "elonmusk",
+   "created_at": "Thu Aug 13 16:13:00 +0000 2026",
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
+  },
+  "2087566447178547494": {
+   "id": "2087566447178547494",
+   "kind": "repost",
+   "autor": "elonmusk",
+   "created_at": "Wed Aug 12 15:46:00 +0000 2026",
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
+  },
+  "2088033597999473050": {
+   "id": "2088033597999473050",
+   "kind": "post",
+   "autor": "elonmusk",
+   "created_at": "Thu Aug 13 22:42:00 +0000 2026",
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
+  },
+  "2087897669067026888": {
+   "id": "2087897669067026888",
+   "kind": "repost",
+   "autor": "elonmusk",
+   "created_at": "Thu Aug 13 13:42:00 +0000 2026",
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
+  },
+  "2088015997144064107": {
+   "id": "2088015997144064107",
+   "kind": "repost",
+   "autor": "elonmusk",
+   "created_at": "Thu Aug 13 21:33:00 +0000 2026",
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
+  },
+  "2088023268871557481": {
+   "id": "2088023268871557481",
+   "kind": "post",
+   "autor": "elonmusk",
+   "created_at": "Thu Aug 13 22:01:00 +0000 2026",
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
+  },
+  "2087986208873832468": {
+   "id": "2087986208873832468",
+   "kind": "repost",
+   "autor": "elonmusk",
+   "created_at": "Thu Aug 13 19:34:00 +0000 2026",
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
+  },
+  "2088003919242809478": {
+   "id": "2088003919242809478",
+   "kind": "repost",
+   "autor": "elonmusk",
+   "created_at": "Thu Aug 13 20:45:00 +0000 2026",
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
+  },
+  "2087988529787736575": {
+   "id": "2087988529787736575",
+   "kind": "repost",
+   "autor": "elonmusk",
+   "created_at": "Thu Aug 13 19:43:00 +0000 2026",
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
+  },
+  "2088018917801218320": {
+   "id": "2088018917801218320",
+   "kind": "post",
+   "autor": "elonmusk",
+   "created_at": "Thu Aug 13 21:44:00 +0000 2026",
+   "primera_vista": "Fri Aug 14 00:03:18 +0000 2026"
   }
  }
 }
