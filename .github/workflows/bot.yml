@@ -23,7 +23,7 @@ name: Bot Polymarket Elon V2 (48h)
 
 on:
   schedule:
-    - cron: '*/15 * * * *'      # cada 15 minutos (UTC)
+    - cron: '4-59/15 * * * *'      # cada 15 minutos (UTC)
   workflow_dispatch: {}          # botón "Run workflow" para probar a mano
 
 permissions:
@@ -36,7 +36,7 @@ concurrency:
 jobs:
   bot:
     runs-on: self-hosted
-    timeout-minutes: 10
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@v4
