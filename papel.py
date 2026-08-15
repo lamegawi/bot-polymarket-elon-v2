@@ -178,7 +178,13 @@ def abrir(estado, actualizar=False):
     if not candidatas:
         print(f"  (sin señal 48 h → no se abre apuesta de papel · paso actual: {estado['paso']})")
         return False
-    c = candidatas[0]
+    # Elegir la MEJOR ventana entre TODAS las disponibles (mayor EV)
+    for _c in candidatas:
+        _p = _c["p_modelo"] if _c["lado"] == "YES" else (1 - _c["p_modelo"])
+        _c["_ev"] = round(_p * _c["cuota"], 3)
+    c = max(candidatas, key=lambda x: x["_ev"])
+    print(f"  · {len(candidatas)} ventana(s) con señal · elegida la de mayor EV: "
+          f"{c['bin_titulo']} {c['lado']} · EV {c['_ev']:.2f}")
     bin_titulo = c["bin_titulo"]
     estado["activa"] = {"slug": c["slug"], "fecha": datetime.now(ET).strftime("%Y-%m-%d"),
                         "bin_titulo": bin_titulo, "lo": c["lo"],
