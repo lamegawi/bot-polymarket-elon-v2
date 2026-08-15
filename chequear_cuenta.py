@@ -80,7 +80,7 @@ def main():
         from py_clob_client_v2.clob_types import BalanceAllowanceParams, AssetType
         r = client.get_balance_allowance(
             BalanceAllowanceParams(asset_type=AssetType.COLLATERAL))
-        saldo = float(r.get("balance", 0))
+        saldo = float(r.get("balance", 0)) / 1e6
         allowance = float(r.get("allowance", 0))
         print(f"\nSaldo USDC vía CLOB (firmante):  ${saldo:.2f}")
         print(f"Allowance USDC (aprobado):        ${allowance:.2f}")
