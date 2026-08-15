@@ -38,6 +38,13 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 25
     steps:
+      - name: Espera escalonada (no saturar fuentes)
+        shell: pwsh
+        run: |
+          Write-Host "Esperando 120s para escalonar arranques..."
+          Start-Sleep -Seconds 120
+
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
