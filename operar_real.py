@@ -364,7 +364,13 @@ def abrir(estado, dry=False, actualizar=False):
     if not candidatas:
         print(f"  (sin señal 48 h → no se abre apuesta real · paso {estado['paso']})")
         return False
-    c = candidatas[0]
+    # Elegir la MEJOR ventana entre TODAS las disponibles (mayor EV)
+    for _c in candidatas:
+        _p = _c["p_modelo"] if _c["lado"] == "YES" else (1 - _c["p_modelo"])
+        _c["_ev"] = round(_p * _c["cuota"], 3)
+    c = max(candidatas, key=lambda x: x["_ev"])
+    print(f"  · {len(candidatas)} ventana(s) con señal · elegida la de mayor EV: "
+          f"{c['bin_titulo']} {c['lado']} · EV {c['_ev']:.2f}")
 
     # ---- salvaguardas
     if estado["paso"] > 7:
@@ -485,8 +491,8 @@ def abrir(estado, dry=False, actualizar=False):
             f"💰 ORDEN {'SIMULADA' if dry else 'REAL'} enviada\n"
             f"Mercado: {c['slug']}\nBin {c['bin_titulo']} · {c['lado']} "
             f"@ {c['precio']:.3f} (cuota {c['cuota']:.2f})\n"
-            f"Paso {estado['paso']} · stake ${c['stake']:.2f}"
-            f"{saldo_ntfy.saldo_real_texto()}\n",
+            f"Paso {estado['paso']} · stake ${c['stake']:.2f}\n"
+            f"{saldo_ntfy.saldo_real_texto()}",
             titulo="[V2-48H] 💰 Apuesta REAL abierta",
             etiqueta="moneybag")
     except Exception:
@@ -539,7 +545,12 @@ def probar_orden():
     except Exception:
         print("  (sin mercado_activo.json: ejecuta primero el bot en papel)")
         return
-        activo = next((m for m in mercados if not m["cerrado"] and m["tipo"] == "48h" and m.get("fin_iso") and datetime.fromisoformat(m["fin_iso"]) > datetime.now(timezone.utc)), None)
+    ahora = datetime.now(timezone.utc)
+    activo = next((m for m in mercados
+                   if not m["cerrado"] and m["tipo"] == "48h"
+                   and m.get("fin_iso")
+                   and datetime.fromisoformat(m["fin_iso"]) > ahora), None)
+
     if not activo:
         print("  (no hay mercado 48h abierto ahora mismo)")
         return
