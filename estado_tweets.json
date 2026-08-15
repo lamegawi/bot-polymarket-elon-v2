@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-08-15T21:46:17.621314",
+ "actualizado": "2026-08-16T00:10:20.219639",
  "tweets": {
   "2085377974396752305": {
    "id": "2085377974396752305",
@@ -1246,6 +1246,14 @@
    "autor": "elonmusk",
    "created_at": "Fri Aug 14 18:02:00 +0000 2026",
    "primera_vista": "Sat Aug 15 21:42:24 +0000 2026"
+  },
+  "2088747465482912152": {
+   "id": "2088747465482912152",
+   "kind": "repost",
+   "autor": "elonmusk",
+   "created_at": "Sat Aug 15 22:10:18 +0000 2026",
+   "primera_vista": "Sat Aug 15 22:10:18 +0000 2026",
+   "exacto": true
   }
  }
 }
