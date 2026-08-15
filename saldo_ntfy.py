@@ -15,17 +15,32 @@ import os
 
 
 def saldo_real_texto():
-    """Devuelve 'Saldo real: $X.XX' o '' si no se puede calcular."""
+    """Devuelve 'Saldo real: $X.XX' o '' si no se puede calcular.
+    Fuente principal: saldo CLOB (get_balance_allowance) — en Polymarket V2
+    el colateral pUSD vive dentro del CLOB. Fallback: on-chain."""
     try:
-        # Reutilizar la función on-chain de operar_real si existe
+        # Reutilizar operar_real* si existe
         import sys
         import importlib.util
         # buscar operar_real en el directorio actual
-        for nombre in ("operar_real", "operar_real_semanal"):
+        for nombre in ("operar_real", "operar_real_semanal", "operar_real_mensual"):
             if importlib.util.find_spec(nombre):
                 mod = importlib.import_module(nombre)
-                if hasattr(mod, "saldo_usdc_onchain") and hasattr(mod, "cargar_config"):
-                    cfg = mod.cargar_config()
+                if not hasattr(mod, "cargar_config"):
+                    continue
+                cfg = mod.cargar_config()
+                # --- 1) CLOB (fuente real en V2) ---
+                if (hasattr(mod, "get_client") and hasattr(mod, "verificar_saldo_usdc")
+                        and cfg.get("wallet_private_key")):
+                    try:
+                        client = mod.get_client()
+                        saldo, _ = mod.verificar_saldo_usdc(client)
+                        if saldo and saldo > 0:
+                            return f"Saldo real: ${saldo:,.2f}"
+                    except Exception:
+                        pass
+                # --- 2) on-chain (fallback) ---
+                if hasattr(mod, "saldo_usdc_onchain"):
                     wallet = (cfg.get("wallet_address") or "").strip()
                     if wallet:
                         saldos = mod.saldo_usdc_onchain(wallet, "polygon") or {}
