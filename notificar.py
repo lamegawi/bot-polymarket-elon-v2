@@ -105,7 +105,7 @@ def enviar(mensaje, titulo=None, etiqueta=None, prioridad="normal"):
     return resultados
 
 
-def apuesta_abierta(act, saldo):
+def apuesta_abierta(act, saldo, prefijo=""):
     """Notificación cuando se abre una apuesta de papel."""
     mensaje = (
         f"📈 APUESTA ABIERTA (paper trading)\n"
@@ -116,11 +116,11 @@ def apuesta_abierta(act, saldo):
         f"Stake: ${act['stake']:.2f} · Saldo bot: ${saldo:.2f}\n"
         f"{saldo_ntfy.saldo_real_texto()}"
     )
-    return enviar(mensaje, titulo="🟢 Nueva apuesta abierta",
+    return enviar(mensaje, titulo=f"{prefijo}🟢 Nueva apuesta abierta",
                   etiqueta="chart_with_upwards_trend")
 
 
-def apuesta_cerrada(reg, saldo):
+def apuesta_cerrada(reg, saldo, prefijo=""):
     """Notificación cuando se cierra una apuesta de papel con su resultado."""
     if reg["resultado"] == "G":
         cabecera = f"✅ GANADA  +${reg['beneficio']:.2f}"
@@ -136,7 +136,7 @@ def apuesta_cerrada(reg, saldo):
         f"Saldo bot: ${saldo:.2f}\n"
         f"{saldo_ntfy.saldo_real_texto()}"
     )
-    return enviar(mensaje, titulo="🔔 Apuesta cerrada", etiqueta=etiqueta)
+    return enviar(mensaje, titulo=f"{prefijo}🔔 Apuesta cerrada", etiqueta=etiqueta)
 
 
 def estado_texto():
@@ -185,39 +185,68 @@ def _puede_avisar(clave, horas=6):
 
 
 def casi_senal(evaluados, horas=6):
-    """Avisa cuando un mercado de 48 h tiene un bin CERCA de cumplir las
-    reglas (p_modelo alto o cuota ≥ 3) pero NO se apuesta. Informativo.
-    Máx. 1 aviso por mercado cada `horas` horas."""
+    """Avisa cuando un mercado tiene un bin CERCA de cumplir las reglas de
+    esta ventana (ver senal.py: REGLA absoluta o de ventaja) pero NO se
+    apuesta. Informativo. Máx. 1 aviso por mercado cada `horas` horas."""
     import senal
+    ventana = getattr(senal, "VENTANA", None)
+    regla = getattr(senal, "REGLA", "absoluta")
+    edge = getattr(senal, "EDGE_MIN", 0.10)
+    p_floor = getattr(senal, "P_FLOOR", 0.15)
+    cmin = getattr(senal, "CUOTA_MINIMA", 3.0)
+    pmin = getattr(senal, "P_MIN_YES", 0.60)
+    pmax = getattr(senal, "P_MAX_NO", 0.30)
     for ev in evaluados:
-        if ev.get("tipo") != "48h":
+        if ventana is not None:
+            if ev.get("tipo") != ventana:
+                continue
+        elif ev.get("tipo") != "48h":
             continue
         mejor = None      # (distancia, lado, bin, p, cuota_lado)
         for b in ev["bins"]:
             p = b["p_modelo"]
+            precio = b["precio_yes"]
             cy = b["cuota_yes"] or 0
             cn = b["cuota_no"] or 0
-            # candidato a YES: cerca en p_modelo o ya tiene cuota
-            if p >= 0.50 or cy >= 3.0:
-                d = max(0.0, senal.P_MIN_YES - p) + max(0.0, senal.CUOTA_MINIMA - cy) * 0.3
-                if mejor is None or d < mejor[0]:
-                    mejor = (d, "YES", b, p, cy, cn)
-            # candidato a NO
-            if p <= 0.35 or cn >= 3.0:
-                d = max(0.0, p - senal.P_MAX_NO) + max(0.0, senal.CUOTA_MINIMA - cn) * 0.3
-                if mejor is None or d < mejor[0]:
-                    mejor = (d, "NO", b, p, cy, cn)
+            if regla == "ventaja":
+                vy = p - precio
+                vn = (1 - p) - (1 - precio)
+                if p >= p_floor and (vy >= edge * 0.5 or cy >= cmin):
+                    d = max(0.0, edge - vy) + max(0.0, cmin - cy) * 0.3
+                    if mejor is None or d < mejor[0]:
+                        mejor = (d, "YES", b, p, cy, cn, vy)
+                if (1 - p) >= p_floor and (vn >= edge * 0.5 or cn >= cmin):
+                    d = max(0.0, edge - vn) + max(0.0, cmin - cn) * 0.3
+                    if mejor is None or d < mejor[0]:
+                        mejor = (d, "NO", b, p, cy, cn, vn)
+            else:
+                # regla absoluta (48 h): cerca en p_modelo o ya tiene cuota
+                if p >= 0.50 or cy >= 3.0:
+                    d = max(0.0, pmin - p) + max(0.0, cmin - cy) * 0.3
+                    if mejor is None or d < mejor[0]:
+                        mejor = (d, "YES", b, p, cy, cn, p - precio)
+                if p <= 0.35 or cn >= 3.0:
+                    d = max(0.0, p - pmax) + max(0.0, cmin - cn) * 0.3
+                    if mejor is None or d < mejor[0]:
+                        mejor = (d, "NO", b, p, cy, cn, p - precio)
         if mejor is None or mejor[0] > 0.15:
             continue
-        d, lado, b, p, cy, cn = mejor
+        d, lado, b, p, cy, cn, ventaja = mejor
         clave = f"casi_{ev['titulo'][:40]}"
         if not _puede_avisar(clave, horas=horas):
             continue
         cuota_lado = cy if lado == "YES" else cn
-        if cuota_lado < senal.CUOTA_MINIMA:
-            falta = f"cuota {cuota_lado:.2f} < {senal.CUOTA_MINIMA:.2f} (falta precio más barato)"
+        if regla == "ventaja":
+            if ventaja < edge:
+                falta = (f"ventaja {ventaja:.0%}pp < {edge:.0%}pp "
+                         f"(necesita p_modelo - precio ≥ {edge:.0%})")
+            else:
+                falta = f"cuota {cuota_lado:.2f} < {cmin:.2f}"
         else:
-            falta = f"p_modelo {p:.0%} fuera de zona (necesita ≥60% o ≤30%)"
+            if cuota_lado < cmin:
+                falta = f"cuota {cuota_lado:.2f} < {cmin:.2f} (falta precio más barato)"
+            else:
+                falta = f"p_modelo {p:.0%} fuera de zona (necesita ≥60% o ≤30%)"
         # enlace directo al mercado (para operar manualmente)
         slug = ev.get('slug') or ''
         enlace = f"https://polymarket.com/event/{slug}" if slug else ""
@@ -227,8 +256,7 @@ def casi_senal(evaluados, horas=6):
             f"Bin {b['titulo']} · lado {lado} · p_modelo {p:.0%}\n"
             f"Cuota YES {cy:.2f} · NO {cn:.2f}\n"
             f"Falta: {falta}\n"
-            f"🔗 {enlace}\n"
-            f"{saldo_ntfy.saldo_real_texto()}"
+            f"🔗 {enlace}"
         )
         enviar(mensaje, titulo="👀 Casi señal (sin apuesta)",
                etiqueta="eyes", prioridad="default")
@@ -276,12 +304,31 @@ def resumen_diario(saldo, paso, historial, apuesta_activa=None,
         nombres = ", ".join(
             (m["titulo"].replace("Elon Musk # tweets ", "").replace("?", ""))
             for m in mercados_48h[:2])
-        lineas.append(f"🕐 Mercados 48 h abiertos: {len(mercados_48h)} ({nombres})")
+        v = getattr(senal, "VENTANA", "48h")
+        tipo_txt = {"48h": "48 h", "semanal": "semanales",
+                    "mensual": "mensuales"}.get(v, v)
+        lineas.append(f"🕐 Mercados {tipo_txt} abiertos: {len(mercados_48h)} ({nombres})")
     if metricas:
         lineas.append(f"📈 AVG7 {metricas.get('avg7', 0):.1f} · V2 {metricas.get('v2', 0)} · "
-                      f"R {metricas.get('r', 0):.2f} · λ48 {metricas.get('lam48', 0):.1f}")
+                      f"R {metricas.get('r', 0):.2f} · λ {metricas.get('lam48', 0):.1f}")
     return enviar("\n".join(lineas), titulo="📊 Resumen diario del bot",
                   etiqueta="bar_chart", prioridad="default")
+
+
+
+def ventana_nueva(mk, prefijo="[V2-48H] "):
+    """Avisa cuando se detecta una ventana de mercado NUEVA (recién creada
+    por Polymarket al terminar la anterior). Se llama automáticamente desde
+    mercado_polymarket.actualizar_mercado()."""
+    slug = mk.get("slug") or ""
+    enlace = f"https://polymarket.com/event/{slug}" if slug else ""
+    mensaje = (
+        f"🆕 NUEVA VENTANA DETECTADA\n"
+        f"{mk.get('titulo', '')}\n"
+        f"Tipo: {mk.get('tipo', '?')} · {str(mk.get('inicio_iso') or '')[:16]} → {str(mk.get('fin_iso') or '')[:16]}\n"
+        f"🔗 {enlace}"
+    )
+    return enviar(mensaje, titulo=f"{prefijo}🆕 Nueva ventana", etiqueta="sparkles")
 
 
 if __name__ == "__main__":
