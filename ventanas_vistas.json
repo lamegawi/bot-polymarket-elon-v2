@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-08-15T15:50:03.317129+00:00",
+ "actualizado": "2026-08-15T16:57:18.551901+00:00",
  "vistas": {
   "elon-musk-of-tweets-august-7-august-14": {
    "cerrada": true,
@@ -14,7 +14,7 @@
    "primera_vista": "2026-08-15T04:35:23.717200+00:00"
   },
   "elon-musk-of-tweets-august-13-august-15": {
-   "cerrada": false,
+   "cerrada": true,
    "primera_vista": "2026-08-15T04:35:23.717202+00:00"
   },
   "elon-musk-of-tweets-august-14-august-21": {
@@ -32,6 +32,10 @@
   "elon-musk-of-tweets-august-2026": {
    "cerrada": false,
    "primera_vista": "2026-08-15T04:35:23.894820+00:00"
+  },
+  "elon-musk-of-tweets-august-17-august-19": {
+   "cerrada": false,
+   "primera_vista": "2026-08-15T16:57:18.551849+00:00"
   }
  }
 }
