@@ -60,8 +60,8 @@ ESTADO = "real.json"
 HISTORIAL = "resultados_real.csv"
 BANKROLL = 500.0
 HOST = "https://clob.polymarket.com"
-FILL_TIMEOUT_MIN = 60          # cancelar si no se llena en 60 min
-CHECK_INTERVAL_S = 60          # comprobar fill cada 60 s
+FILL_TIMEOUT_MIN = 10          # cancelar si no se llena en 10 min
+CHECK_INTERVAL_S = 30          # comprobar fill cada 30 s
 
 
 # ------------------------------------------------------------------ config
@@ -442,6 +442,19 @@ def abrir(estado, dry=False, actualizar=False):
                 return False
             print(f"  (stake ${c['stake']:.2f} → {size_shares} shares a "
                   f"{c['precio']:.3f})")
+            # limpiar órdenes abiertas previas (restos de runs cancelados)
+            try:
+                from py_clob_client_v2.clob_types import OrderPayload
+                _abiertas = client.get_open_orders() or []
+                for _o in _abiertas:
+                    try:
+                        client.cancel_order(OrderPayload(orderID=_o.get("id")))
+                    except Exception:
+                        pass
+                if _abiertas:
+                    print(f"  · canceladas {len(_abiertas)} órdenes previas sin cerrar")
+            except Exception as e:
+                print(f"  (aviso limpiando órdenes previas: {e})")
             resp = client.create_and_post_order(
                 OrderArgs(price=c["precio"], size=size_shares,
                           side="BUY", token_id=token_id))
@@ -469,7 +482,8 @@ def abrir(estado, dry=False, actualizar=False):
                 time.sleep(CHECK_INTERVAL_S)
             if not llenada:
                 try:
-                    client.cancel(order_id)
+                    from py_clob_client_v2.clob_types import OrderPayload
+                    client.cancel_order(OrderPayload(orderID=order_id))
                     print("  Orden cancelada (no se llenó en el tiempo límite).")
                 except Exception as e:
                     print(f"  [aviso] no se pudo cancelar: {e}")
