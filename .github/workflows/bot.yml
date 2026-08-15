@@ -35,7 +35,7 @@ concurrency:
 
 jobs:
   bot:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     timeout-minutes: 10
     steps:
       - name: Checkout
@@ -65,6 +65,8 @@ jobs:
           git config user.name "bot-poly-v2-48h"
           git config user.email "bot-poly-v2-48h@users.noreply.github.com"
           git add -A
-          git pull --rebase --autostash "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main || true
-          git diff --cached --quiet || git commit -m "estado bot v2-48h $(date -u +'%Y-%m-%d %H:%M')"
-          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main
+          git pull --rebase --autostash "https://x-access-token:$($env:GITHUB_TOKEN)@github.com/$($env:GITHUB_REPOSITORY).git" HEAD:main 2>$null
+          Write-Host "pull exit: $LASTEXITCODE (si falla no es critico)"
+          git diff --cached --quiet
+          if ($LASTEXITCODE -ne 0) { git commit -m "estado bot v2-48h $(Get-Date -Format 'yyyy-MM-dd HH:mm')" }
+          git push "https://x-access-token:$($env:GITHUB_TOKEN)@github.com/$($env:GITHUB_REPOSITORY).git" HEAD:main
