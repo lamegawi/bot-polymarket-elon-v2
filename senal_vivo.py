@@ -106,7 +106,7 @@ def evaluar(avg7, v2, ajuste, lam48, mercados, paso, t0_override=-1, ahora=None)
                                    "lado": lado, "precio": (b["precio_yes"] if lado == "YES" else 1 - b["precio_yes"]),
                                    "cuota": (cy if lado == "YES" else cn), "p_modelo": p,
                                    "stake": stake})
-        evaluados.append({"titulo": mk["titulo"], "tipo": mk["tipo"],
+        evaluados.append({"titulo": mk["titulo"], "slug": mk.get("slug", ""), "tipo": mk["tipo"],
                           "inicio": inicio, "fin": fin, "horas_rest": horas_rest,
                           "lam_rest": lam_rest, "t0": t0, "bins": bins})
     return evaluados, candidatas
