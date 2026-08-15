@@ -249,7 +249,8 @@ def verificar_saldo_usdc(client):
         from py_clob_client_v2.clob_types import BalanceAllowanceParams, AssetType
         r = client.get_balance_allowance(
             BalanceAllowanceParams(asset_type=AssetType.COLLATERAL))
-        return float(r.get("balance", 0)), float(r.get("allowance", 0))
+        # el balance viene en unidades base del token (6 decimales: pUSD/USDC)
+        return float(r.get("balance", 0)) / 1e6, float(r.get("allowance", 0))
     except Exception as e:
         print(f"  [aviso] no se pudo consultar saldo USDC vía CLOB: {e}")
         return None, None
@@ -397,7 +398,15 @@ def abrir(estado, dry=False, actualizar=False):
         # fondos están en la wallet de la cuenta (pUSD).
         wallet = (cfg.get("wallet_address") or "").strip()
         saldo_real = 0.0
-        if wallet:
+        # FUENTE PRINCIPAL (Polymarket V2, abril 2026): el colateral de
+        # trading (pUSD) vive DENTRO del CLOB (balance interno), no suelto
+        # on-chain en la wallet. get_balance_allowance devuelve el balance
+        # real del funder. El saldo on-chain solo se usa como respaldo.
+        saldo_clob, _ = verificar_saldo_usdc(client)
+        if saldo_clob is not None and saldo_clob > 0:
+            saldo_real = saldo_clob
+            print(f"  Saldo CLOB: ${saldo_real:.2f} pUSD")
+        elif wallet:
             saldos = saldo_usdc_onchain(wallet, "polygon") or {}
             saldo_real = (saldos.get("pUSD", 0) + saldos.get("USDC", 0)
                           + saldos.get("USDC.e", 0))
@@ -406,8 +415,7 @@ def abrir(estado, dry=False, actualizar=False):
                   f"USDC ${saldos.get('USDC', 0):.2f} · "
                   f"USDC.e ${saldos.get('USDC.e', 0):.2f}")
         else:
-            saldo, _ = verificar_saldo_usdc(client)
-            saldo_real = saldo or 0.0
+            saldo_real = saldo_clob or 0.0
         if saldo_real < coste_total:
             print(f"  [BLOQUEADO] saldo insuficiente en la cuenta "
                   f"(${saldo_real:.2f} < ${coste_total:.2f}).")
