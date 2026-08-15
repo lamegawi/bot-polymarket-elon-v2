@@ -227,7 +227,8 @@ def casi_senal(evaluados, horas=6):
             f"Bin {b['titulo']} · lado {lado} · p_modelo {p:.0%}\n"
             f"Cuota YES {cy:.2f} · NO {cn:.2f}\n"
             f"Falta: {falta}\n"
-            f"🔗 {enlace}"
+            f"🔗 {enlace}\n"
+            f"{saldo_ntfy.saldo_real_texto()}"
         )
         enviar(mensaje, titulo="👀 Casi señal (sin apuesta)",
                etiqueta="eyes", prioridad="default")
