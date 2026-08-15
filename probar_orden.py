@@ -18,6 +18,7 @@ import json
 import os
 import sys
 import time
+from datetime import datetime, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -35,6 +36,11 @@ def main():
     print("\nCreando cliente CLOB (SDK V2)…")
     client = get_client()
 
+    # refrescar precios para no usar datos desactualizados
+    try:
+        mp.actualizar_mercado()
+    except Exception:
+        pass
     print("Buscando mercado 48h activo…")
     try:
         mercados = json.load(open(mp.SALIDA, encoding="utf-8"))["mercados"]
@@ -42,7 +48,12 @@ def main():
         print(f"  ✖ no hay mercado_activo.json: {e}")
         print("  → Ejecuta antes:  python bot.py --excel  (una pasada en papel)")
         return 1
-    activo = next((m for m in mercados if not m["cerrado"] and m["tipo"] == "48h"), None)
+    ahora = datetime.now(timezone.utc)
+    activo = next((m for m in mercados
+                   if not m["cerrado"] and m["tipo"] == "48h"
+                   and m.get("fin_iso")
+                   and datetime.fromisoformat(m["fin_iso"]) > ahora), None)
+
     if not activo:
         print("  ✖ no hay mercado 48h abierto ahora mismo (reintenta más tarde)")
         return 1
@@ -85,7 +96,8 @@ def main():
             print("  Cancelando la orden de prueba…")
             time.sleep(8)
             try:
-                cliente.cancel_order(oid)
+                from py_clob_client_v2.clob_types import OrderPayload
+                cliente.cancel_order(OrderPayload(orderID=oid))
                 print("  ✔ Orden cancelada (sin riesgo).")
             except Exception as e:
                 print(f"  (aviso al cancelar — no es grave): {e}")
