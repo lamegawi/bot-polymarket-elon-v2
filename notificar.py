@@ -84,8 +84,12 @@ def enviar(mensaje, titulo=None, etiqueta=None, prioridad="normal"):
             cmd += ["-H", f"Authorization: Bearer {nt['token']}"]
         try:
             r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
-            resultados.append(("ntfy", r.returncode == 0))
+            ok = r.returncode == 0
+            if not ok:
+                print(f"  [ntfy] FALLO al enviar (rc={r.returncode}): {r.stderr[:200]}")
+            resultados.append(("ntfy", ok))
         except Exception as e:
+            print(f"  [ntfy] ERROR al enviar: {e}")
             resultados.append(("ntfy", False))
 
     # ------------------------------ telegram
