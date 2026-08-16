@@ -60,7 +60,7 @@ ESTADO = "real.json"
 HISTORIAL = "resultados_real.csv"
 BANKROLL = 500.0
 HOST = "https://clob.polymarket.com"
-FILL_TIMEOUT_MIN = 10          # cancelar si no se llena en 10 min
+FILL_TIMEOUT_MIN = 60          # cancelar si no se llena en 60 min
 CHECK_INTERVAL_S = 30          # comprobar fill cada 30 s
 
 
@@ -480,6 +480,18 @@ def abrir(estado, dry=False, actualizar=False):
                 except Exception:
                     pass
                 time.sleep(CHECK_INTERVAL_S)
+            if llenada:
+                try:
+                    notificar.enviar(
+                        f"✅ ORDEN REAL LLENADA (apuesta activa)\n"
+                        f"Mercado: {c['slug']}\nBin {c['bin_titulo']} · {c['lado']} "
+                        f"@ {c['precio']:.3f} (cuota {c['cuota']:.2f})\n"
+                        f"Stake ${c['stake']:.2f} · se ejecutará hasta {c['ventana'][1].isoformat()[:16]}\n"
+                        f"{saldo_ntfy.saldo_real_texto()}",
+                        titulo="[REAL] ✅ Apuesta EJECUTADA",
+                        etiqueta="white_check_mark")
+                except Exception as e:
+                    print(f"  [aviso] notif llenada: {e}")
             if not llenada:
                 try:
                     from py_clob_client_v2.clob_types import OrderPayload
@@ -517,8 +529,8 @@ def abrir(estado, dry=False, actualizar=False):
             f"{saldo_ntfy.saldo_real_texto()}",
             titulo="[V2-48H] 💰 Apuesta REAL abierta",
             etiqueta="moneybag")
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"  [aviso] notif abierta: {e}")
     return True
 
 
