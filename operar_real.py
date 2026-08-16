@@ -460,6 +460,18 @@ def abrir(estado, dry=False, actualizar=False):
                           side="BUY", token_id=token_id))
             order_id = resp.get("orderID") or resp.get("order_id")
             print(f"  Orden enviada: {order_id}  (respuesta: {str(resp)[:120]})")
+            # NOTIFICAR INMEDIATAMENTE (no esperar al fill)
+            try:
+                notificar.enviar(
+                    f"💰 ORDEN REAL enviada\n"
+                    f"Mercado: {c['slug']}\nBin {c['bin_titulo']} · {c['lado']} "
+                    f"@ {c['precio']:.3f} (cuota {c['cuota']:.2f})\n"
+                    f"Paso {estado['paso']} · stake ${c['stake']:.2f} · vigilando fill (60 min)\n"
+                    f"{saldo_ntfy.saldo_real_texto()}",
+                    titulo="[V2-48H] 💰 Apuesta REAL abierta",
+                    etiqueta="moneybag")
+            except Exception as e:
+                print(f"  [aviso] notif inmediata: {e}")
         except Exception as e:
             print(f"  [ERROR] no se pudo enviar la orden: {e}")
             return False
@@ -520,17 +532,6 @@ def abrir(estado, dry=False, actualizar=False):
     guardar_estado(estado)
     print(f"  ✔ ABIERTA apuesta REAL (o simulada): {c['bin_titulo']} {c['lado']} "
           f"a {c['precio']:.3f} · paso {estado['paso']} · stake ${c['stake']:.2f}")
-    try:
-        notificar.enviar(
-            f"💰 ORDEN {'SIMULADA' if dry else 'REAL'} enviada\n"
-            f"Mercado: {c['slug']}\nBin {c['bin_titulo']} · {c['lado']} "
-            f"@ {c['precio']:.3f} (cuota {c['cuota']:.2f})\n"
-            f"Paso {estado['paso']} · stake ${c['stake']:.2f}\n"
-            f"{saldo_ntfy.saldo_real_texto()}",
-            titulo="[V2-48H] 💰 Apuesta REAL abierta",
-            etiqueta="moneybag")
-    except Exception as e:
-        print(f"  [aviso] notif abierta: {e}")
     return True
 
 
