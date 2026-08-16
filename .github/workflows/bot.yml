@@ -1,37 +1,20 @@
-# 🤖 Bot Polymarket (modo REAL) — 24/7 GRATIS con GitHub Actions
-# --------------------------------------------------------------
-# Ejecuta una pasada completa del bot cada 15 minutos usando los
-# minutos GRATIS de GitHub Actions. El bot guarda su estado haciendo
-# commit en cada pasada (los datos viven en el repo).
-#
-# ⭐ VENTAJA: usa el GITHUB_TOKEN automático (no hace falta crear PAT).
-#   Solo hay que declarar "permissions: contents: write" (ya está abajo).
-#
-# REQUISITOS (ver GUIA_24H_PASO_A_PASO.md):
-#   1) Repositorio en GitHub PÚBLICO (minutos ilimitados gratis)
-#   2) Secretos del repo (Settings → Secrets and variables → Actions):
-#        POLY_PRIVATE_KEY    → tu clave privada del firmante
-#        POLY_WALLET_ADDRESS → tu dirección 0x... de Polymarket
-#        REAL_CONFIRMADO     → "1" para operar de verdad
-#
-# NOTAS:
-#   · NUNCA subas config_real.json (ya está en .gitignore).
-#   · El bot hace commit en cada pasada → GitHub nunca pausa los cron.
-#   · Las notificaciones al móvil (ntfy) funcionan igual (config.json no es secreto).
+# 🤖 Bot Polymarket — 24/7 con GitHub Actions + runner propio (Windows)
+# Se ejecuta en el RUNNER SELF-HOSTED de tu PC (IP España) → MODO REAL OK.
+# shell: cmd  (cmd no tiene política de scripts → funciona como servicio de Windows)
 
 name: Bot Polymarket Elon V2 (48h)
 
 on:
   schedule:
-    - cron: '4-59/15 * * * *'      # cada 15 minutos (UTC)
-  workflow_dispatch: {}          # botón "Run workflow" para probar a mano
+    - cron: '4-59/15 * * * *'      # cada 15 min, escalonado
+  workflow_dispatch: {}
 
 permissions:
-  contents: write                # permite al GITHUB_TOKEN hacer commit/push
+  contents: write
 
 concurrency:
   group: bot-v2-48h
-  cancel-in-progress: false      # nunca cancelar una pasada a medias
+  cancel-in-progress: false
 
 jobs:
   bot:
@@ -39,11 +22,8 @@ jobs:
     timeout-minutes: 25
     steps:
       - name: Espera escalonada (no saturar fuentes)
-        shell: powershell
-        run: |
-          Write-Host "Esperando 120s para escalonar arranques..."
-          Start-Sleep -Seconds 120
-
+        shell: cmd
+        run: powershell -ExecutionPolicy Bypass -Command "Start-Sleep -Seconds 120"
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -51,14 +31,17 @@ jobs:
           fetch-depth: 1
 
       - name: Comprobar Python (usar el del PC)
+        shell: cmd
         run: python --version
 
       - name: Instalar dependencias
+        shell: cmd
         run: |
           python -m pip install --quiet --upgrade pip
           python -m pip install --quiet openpyxl py-clob-client-v2
 
       - name: Ejecutar una pasada del bot (MODO REAL)
+        shell: cmd
         env:
           POLY_PRIVATE_KEY: ${{ secrets.POLY_PRIVATE_KEY }}
           POLY_WALLET_ADDRESS: ${{ secrets.POLY_WALLET_ADDRESS }}
@@ -66,12 +49,12 @@ jobs:
         run: python -u bot.py --modo real --excel
 
       - name: Guardar estado (commit de los datos)
+        shell: cmd
         run: |
           git config user.name "bot-poly-v2-48h"
           git config user.email "bot-poly-v2-48h@users.noreply.github.com"
           git add -A
-          git pull --rebase --autostash "https://x-access-token:$($env:GITHUB_TOKEN)@github.com/$($env:GITHUB_REPOSITORY).git" HEAD:main 2>$null
-          Write-Host "pull exit: $LASTEXITCODE (si falla no es critico)"
+          git pull --rebase --autostash "https://x-access-token:%GITHUB_TOKEN%@github.com/%GITHUB_REPOSITORY%.git" HEAD:main >nul 2>&1
           git diff --cached --quiet
-          if ($LASTEXITCODE -ne 0) { git commit -m "estado bot v2-48h $(Get-Date -Format 'yyyy-MM-dd HH:mm')" }
-          git push "https://x-access-token:$($env:GITHUB_TOKEN)@github.com/$($env:GITHUB_REPOSITORY).git" HEAD:main
+          if errorlevel 1 git commit -m "estado bot v2-48h %DATE% %TIME%"
+          git push "https://x-access-token:%GITHUB_TOKEN%@github.com/%GITHUB_REPOSITORY%.git" HEAD:main
