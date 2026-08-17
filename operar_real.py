@@ -533,7 +533,8 @@ def vigilar_orden_pendiente(estado, cfg):
     - > FILL_TIMEOUT_MIN sin llenar → cancela y notifica ⚠️.
     - Sigue pendiente → solo informa en log (el bot continúa operando)."""
     act = estado.get("activa") or {}
-    if not act.get("order_id") or not act.get("pendiente"):
+    # si hay order_id y no está marcado como ya-llenado, se vigila
+    if not act.get("order_id") or act.get("pendiente") is False:
         return
     try:
         from py_clob_client_v2.clob_types import OrderPayload
