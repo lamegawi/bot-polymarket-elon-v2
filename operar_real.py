@@ -283,12 +283,31 @@ def evento_resuelto(slug):
 # ============================================================
 # ANTI-DUPLICACIÓN: registro compartido entre los 6 bots
 # ============================================================
-LOCK_APUESTAS = os.environ.get("LOCK_APUESTAS", "/home/bots/apuestas_compartidas.json")
+def _lock_path():
+    """Ruta del registro compartido: usa la configurada, o /home/bots (VM),
+    o si no es escribible, un archivo local (runners GitHub/PC)."""
+    p = os.environ.get("LOCK_APUESTAS", "")
+    if p:
+        return p
+    candidatos = ["/home/bots/apuestas_compartidas.json",
+                  "./apuestas_compartidas.json"]
+    for c in candidatos:
+        try:
+            os.makedirs(os.path.dirname(c) or ".", exist_ok=True)
+            with open(c, "a", encoding="utf-8") as f:
+                pass
+            return c
+        except Exception:
+            continue
+    return "./apuestas_compartidas.json"
+
+
+LOCK_APUESTAS = _lock_path()
 BOT_NOMBRE = "48H-V2"
 
 def _leer_lock():
     try:
-        with open(LOCK_APUESTAS, encoding="utf-8") as f:
+        with open(_lock_path(), encoding="utf-8") as f:
             return json.load(f)
     except Exception:
         return {}
@@ -296,11 +315,12 @@ def _leer_lock():
 
 def _guardar_lock(d):
     try:
-        os.makedirs(os.path.dirname(LOCK_APUESTAS), exist_ok=True)
-        tmp = LOCK_APUESTAS + ".tmp"
+        ruta = _lock_path()
+        os.makedirs(os.path.dirname(ruta) or ".", exist_ok=True)
+        tmp = ruta + ".tmp"
         with open(tmp, "w", encoding="utf-8") as f:
             json.dump(d, f, ensure_ascii=False, indent=1)
-        os.replace(tmp, LOCK_APUESTAS)
+        os.replace(tmp, ruta)
     except Exception as e:
         print(f"  [aviso] lock: {e}")
 
