@@ -475,23 +475,23 @@ def abrir(estado, dry=False, actualizar=False):
         except Exception as e:
             print(f"  [ERROR] no se pudo enviar la orden: {e}")
             return False
-        # esperar fill (con timeout y cancelación de seguridad)
+        # chequeo rápido del fill (sin bloquear el bot: la vigilancia
+        # continúa en cada pasada vía vigilar_orden_pendiente)
+        llenada = False
         if order_id:
-            llenada = False
-            t0 = time.time()
-            while time.time() - t0 < FILL_TIMEOUT_MIN * 60:
+            for _intento in range(3):
                 try:
                     detalle = client.get_order(order_id)
-                    estado_ord = detalle.get("status")
-                    size_matched = float(detalle.get("size_matched", 0) or 0)
-                    if estado_ord == "matched" or size_matched >= c["stake"] * 0.99:
+                    st = (detalle.get("status") or "").lower()
+                    sz = float(detalle.get("size_matched", 0) or 0)
+                    if st in ("matched", "filled") or sz > 0:
                         llenada = True
                         break
-                    if estado_ord == "cancelled":
+                    if st == "cancelled":
                         break
                 except Exception:
                     pass
-                time.sleep(CHECK_INTERVAL_S)
+                time.sleep(10)
             if llenada:
                 try:
                     notificar.enviar(
@@ -504,22 +504,9 @@ def abrir(estado, dry=False, actualizar=False):
                         etiqueta="white_check_mark")
                 except Exception as e:
                     print(f"  [aviso] notif llenada: {e}")
-            if not llenada:
-                try:
-                    from py_clob_client_v2.clob_types import OrderPayload
-                    client.cancel_order(OrderPayload(orderID=order_id))
-                    print("  Orden cancelada (no se llenó en el tiempo límite).")
-                except Exception as e:
-                    print(f"  [aviso] no se pudo cancelar: {e}")
-                try:
-                    notificar.enviar(
-                        f"Orden REAL cancelada por timeout: {c['bin_titulo']} "
-                        f"{c['lado']} @ {c['precio']}",
-                        titulo="⚠️ Orden cancelada (no llenada)",
-                        etiqueta="warning")
-                except Exception:
-                    pass
-                return False
+            else:
+                print(f"  ⏳ Orden {order_id[:14]}… pendiente de llenado "
+                      f"(se vigilará cada pasada, máx {FILL_TIMEOUT_MIN} min)")
 
     estado["activa"] = {"slug": c["slug"], "fecha": datetime.now(ET).strftime("%Y-%m-%d"),
                         "bin_titulo": c["bin_titulo"], "lo": c["lo"],
@@ -528,6 +515,8 @@ def abrir(estado, dry=False, actualizar=False):
                         "cuota": round(c["cuota"], 2), "p_modelo": round(c["p_modelo"], 4),
                         "paso": estado["paso"], "stake": c["stake"],
                         "order_id": order_id, "token_id": token_id,
+                        "pendiente": bool(order_id) and not llenada,
+                        "fecha_orden_ts": time.time(),
                         "ventana_fin": c["ventana"][1].isoformat()}
     guardar_estado(estado)
     print(f"  ✔ ABIERTA apuesta REAL (o simulada): {c['bin_titulo']} {c['lado']} "
@@ -536,6 +525,66 @@ def abrir(estado, dry=False, actualizar=False):
 
 
 # ------------------------------------------------------------------ pasada
+
+
+def vigilar_orden_pendiente(estado, cfg):
+    """Comprueba en cada pasada si la orden pendiente se llenó.
+    - Llenada → notifica ✅ (apuesta activa) y deja de vigilar.
+    - > FILL_TIMEOUT_MIN sin llenar → cancela y notifica ⚠️.
+    - Sigue pendiente → solo informa en log (el bot continúa operando)."""
+    act = estado.get("activa") or {}
+    if not act.get("order_id") or not act.get("pendiente"):
+        return
+    try:
+        from py_clob_client_v2.clob_types import OrderPayload
+        client = get_client()
+        detalle = client.get_order(act["order_id"])
+        st = (detalle.get("status") or "").lower()
+        sz = float(detalle.get("size_matched", 0) or 0)
+        llenada = st in ("matched", "filled") or sz > 0
+        if llenada:
+            act["pendiente"] = False
+            act.pop("order_id", None)
+            act.pop("fecha_orden_ts", None)
+            guardar_estado(estado)
+            print(f"  ✅ Orden REAL LLENADA (apuesta activa): {act['bin_titulo']} "
+                  f"{act['lado']} @ {act['precio']:.3f}")
+            try:
+                notificar.enviar(
+                    f"✅ ORDEN REAL LLENADA (apuesta activa)\n"
+                    f"Mercado: {act['slug']}\nBin {act['bin_titulo']} · {act['lado']} "
+                    f"@ {act['precio']:.3f} (cuota {act['cuota']:.2f})\n"
+                    f"Stake ${act['stake']:.2f} · resuelve: {str(act.get('ventana_fin','?'))[:16]}\n"
+                    f"{saldo_ntfy.saldo_real_texto()}",
+                    titulo="[REAL] ✅ Apuesta EJECUTADA",
+                    etiqueta="white_check_mark")
+            except Exception as e:
+                print(f"  [aviso] notif llenada: {e}")
+        else:
+            creada = act.get("fecha_orden_ts") or time.time()
+            edad_min = (time.time() - creada) / 60
+            if edad_min >= FILL_TIMEOUT_MIN:
+                try:
+                    client.cancel_order(OrderPayload(orderID=act["order_id"]))
+                    print(f"  Orden cancelada (no se llenó en {FILL_TIMEOUT_MIN} min).")
+                except Exception as e:
+                    print(f"  [aviso] cancel: {e}")
+                try:
+                    notificar.enviar(
+                        f"⚠️ Orden REAL cancelada (no llenada en {FILL_TIMEOUT_MIN} min)\n"
+                        f"{act['bin_titulo']} {act['lado']} @ {act['precio']:.3f}",
+                        titulo="⚠️ Orden cancelada",
+                        etiqueta="warning")
+                except Exception:
+                    pass
+                estado["activa"] = None
+                guardar_estado(estado)
+            else:
+                print(f"  ⏳ Orden pendiente: {act['bin_titulo']} {act['lado']} "
+                      f"@ {act['precio']:.3f} ({edad_min:.0f}/{FILL_TIMEOUT_MIN} min)")
+    except Exception as e:
+        print(f"  [aviso] vigilar orden: {e}")
+
 def pasada_real(dry=False, actualizar=False, excel=False):
     """Una pasada completa de trading real."""
     cfg = cargar_config()
