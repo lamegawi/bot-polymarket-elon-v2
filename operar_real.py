@@ -278,6 +278,65 @@ def evento_resuelto(slug):
     return False, None
 
 
+
+
+# ============================================================
+# ANTI-DUPLICACIÓN: registro compartido entre los 6 bots
+# ============================================================
+LOCK_APUESTAS = os.environ.get("LOCK_APUESTAS", "/home/bots/apuestas_compartidas.json")
+BOT_NOMBRE = "48H-V2"
+
+def _leer_lock():
+    try:
+        with open(LOCK_APUESTAS, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def _guardar_lock(d):
+    try:
+        os.makedirs(os.path.dirname(LOCK_APUESTAS), exist_ok=True)
+        tmp = LOCK_APUESTAS + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(d, f, ensure_ascii=False, indent=1)
+        os.replace(tmp, LOCK_APUESTAS)
+    except Exception as e:
+        print(f"  [aviso] lock: {e}")
+
+
+def ventana_ocupada(slug, bin_titulo, ahora=None):
+    """Devuelve el nombre del bot que ya tiene apuesta en esa ventana/bin,
+    o None si está libre. Expira cuando termina la ventana."""
+    ahora = ahora or datetime.now(timezone.utc)
+    d = _leer_lock()
+    clave = f"{slug}|{bin_titulo}"
+    ent = d.get(clave)
+    if not ent:
+        return None
+    hasta = ent.get("hasta") or ""
+    if hasta:
+        try:
+            if datetime.fromisoformat(hasta).astimezone(timezone.utc) < ahora:
+                return None
+        except Exception:
+            pass
+    return ent.get("bot") or "?"
+
+
+def marcar_ventana(slug, bin_titulo, fin_iso):
+    d = _leer_lock()
+    d[f"{slug}|{bin_titulo}"] = {"bot": BOT_NOMBRE, "hasta": fin_iso or "",
+                                  "ts": time.time()}
+    _guardar_lock(d)
+
+
+def liberar_ventana(slug, bin_titulo):
+    d = _leer_lock()
+    d.pop(f"{slug}|{bin_titulo}", None)
+    _guardar_lock(d)
+
+
 def resolver(estado, fee_pct=0.0):
     """Cierra la apuesta real activa si su mercado ya se resolvió.
     (Polymarket canjea automáticamente las shares ganadoras → el USDC
@@ -318,6 +377,7 @@ def resolver(estado, fee_pct=0.0):
     estado["historial"].append(registro)
     estado["activa"] = None
     escribir_historial(estado["historial"])
+    liberar_ventana(act.get("slug", ""), act.get("bin_titulo", ""))
     guardar_estado(estado)
     print(f"  ✔ RESUELTA apuesta REAL del {act['fecha']}: {act['bin_titulo']} "
           f"{act['lado']} → ganador {winner_titulo} → {res} ${benef:+.2f} "
@@ -519,6 +579,7 @@ def abrir(estado, dry=False, actualizar=False):
                         "fecha_orden_ts": time.time(),
                         "ventana_fin": c["ventana"][1].isoformat()}
     guardar_estado(estado)
+    marcar_ventana(c["slug"], c["bin_titulo"], c["ventana"][1].isoformat())
     print(f"  ✔ ABIERTA apuesta REAL (o simulada): {c['bin_titulo']} {c['lado']} "
           f"a {c['precio']:.3f} · paso {estado['paso']} · stake ${c['stake']:.2f}")
     return True
