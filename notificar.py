@@ -64,7 +64,7 @@ def guardar_config(cfg):
         json.dump(cfg, f, ensure_ascii=False, indent=2)
 
 
-def enviar(mensaje, titulo=None, etiqueta=None, prioridad="normal"):
+def enviar(mensaje, titulo=None, etiqueta=None, prioridad="default"):
     """Envía a todos los canales configurados. Devuelve lista (canal, ok)."""
     cfg = cargar_config()
     resultados = []
@@ -285,6 +285,7 @@ def resumen_diario(saldo, paso, historial, apuesta_activa=None,
                    mercados_48h=None, metricas=None):
     """Aviso diario con el estado completo: saldo, operaciones del día,
     apuesta activa, mercados abiertos y métricas de actividad."""
+    import senal
     hoy = datetime.now(ET).date()
     ops_hoy = [h for h in historial if h.get("fecha") == hoy.isoformat()]
     n = len(historial)
